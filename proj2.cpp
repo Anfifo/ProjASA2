@@ -14,6 +14,8 @@ using namespace  std;
 #define AERO 1
 #define ROAD 2
 
+int mergesCounter;
+
 typedef  pair<int, int> nrConnections;
 
 /**
@@ -175,6 +177,8 @@ pair<int,nrConnections> Graph::kruskalMST(){
 	int nrRoadsMST = 0;
 	int nrAerosMST = 0;
 
+	mergesCounter = 0;
+
 	//Orders the edges by weight
 	sort(edges.begin(), edges.end(), cheapestEdge());
 
@@ -202,6 +206,7 @@ pair<int,nrConnections> Graph::kruskalMST(){
 			mstWeight += (*i).getWeight();
 
 			sets.merge(u,v);
+			mergesCounter++;
 		}
 	}
 
@@ -245,6 +250,10 @@ int inputProcess(){
 	int airports[numberOfCities];
 	int roadsInCity[numberOfCities];
 
+	//initialize all cities with no airports
+	for( i = 0; i < numberOfCities; i++)
+		airports[i] = -1;
+
 	Graph roadGraph (numberOfCities);
 	Graph fullGraph (numberOfCities+1);
 
@@ -253,7 +262,7 @@ int inputProcess(){
 
 		Edge airportEdge(airportID, -1, buildingCost, AERO);
 		fullGraph.insertEdge(airportEdge);
-		airports[airportID]++;
+		airports[airportID] = buildingCost;
 	}
 
 	std::cin >> potentialRoads;
@@ -267,6 +276,15 @@ int inputProcess(){
 
 		roadsInCity[city1]++;
 		roadsInCity[city2]++;
+	}
+
+	for(i = 0; i < numberOfCities; i++){
+		if(roadsInCity[i] == 0){
+			if(airports[i] == -1){
+				// insuficiente
+			}
+			//only do the complete Graph
+		}
 	}
 
 	pair<int,nrConnections> roadsOutput = roadGraph.kruskalMST();
