@@ -14,7 +14,7 @@ using namespace  std;
 #define AERO 1
 #define ROAD 2
 
-int mergesCounter;
+
 
 typedef  pair<int, int> nrConnections;
 
@@ -177,8 +177,6 @@ pair<int,nrConnections> Graph::kruskalMST(){
 	int nrRoadsMST = 0;
 	int nrAerosMST = 0;
 
-	mergesCounter = 0;
-
 	//Orders the edges by weight
 	sort(edges.begin(), edges.end(), cheapestEdge());
 
@@ -195,7 +193,6 @@ pair<int,nrConnections> Graph::kruskalMST(){
 		// and the edge selected creates a cycle
 		if(set_u != set_v){
 
-			cout << u << " - " << v << endl;
 			if((*i).getType() == ROAD){
 				nrRoadsMST++;
 			}
@@ -206,11 +203,9 @@ pair<int,nrConnections> Graph::kruskalMST(){
 			mstWeight += (*i).getWeight();
 
 			sets.merge(u,v);
-			mergesCounter++;
 		}
 	}
 
-	cout << mstWeight << endl;
 
 	return make_pair(mstWeight,make_pair(nrAerosMST,nrRoadsMST));
 }
@@ -235,9 +230,10 @@ pair<int,nrConnections> Graph::kruskalMST(){
  */
 int inputProcess(){
 
-	int numberOfCities;
 	int potentialAirports;
 	int potentialRoads;
+	int numberOfCities;
+	int airportVertex;
 	int buildingCost;
 	int airportID;
 	int city1;
@@ -245,32 +241,38 @@ int inputProcess(){
 	int i;
 
 	std::cin >> numberOfCities;
-	std::cin >> potentialAirports;
 
 	int airports[numberOfCities];
 	int roadsInCity[numberOfCities];
 
-	//initialize all cities with no airports
+	Graph roadGraph (numberOfCities);
+	Graph fullGraph (numberOfCities+1);
+
+//initialize all cities with no airports
 	for( i = 0; i < numberOfCities; i++)
 		airports[i] = -1;
 
-	Graph roadGraph (numberOfCities);
-	Graph fullGraph (numberOfCities+1);
+
+
+// airports
+	std::cin >> potentialAirports;
+	airportVertex = numberOfCities;
 
 	for(i = 0; i < potentialAirports; i++){
 		std::cin >> airportID >> buildingCost;
 
-		Edge airportEdge(airportID, -1, buildingCost, AERO);
+		Edge airportEdge(airportID-1, airportVertex, buildingCost, AERO);
 		fullGraph.insertEdge(airportEdge);
 		airports[airportID] = buildingCost;
 	}
 
+// Roads
 	std::cin >> potentialRoads;
 
 	for(i = 0; i < potentialRoads; i++){
 		std::cin >> city1 >> city2 >> buildingCost;
 
-		Edge roadEdge(city1, city2, buildingCost, ROAD);
+		Edge roadEdge(city1-1, city2-1, buildingCost, ROAD);
 		fullGraph.insertEdge(roadEdge);
 		roadGraph.insertEdge(roadEdge);
 
@@ -281,25 +283,31 @@ int inputProcess(){
 	for(i = 0; i < numberOfCities; i++){
 		if(roadsInCity[i] == 0){
 			if(airports[i] == -1){
-				// insuficiente
+				std::cout << "Insuficiente" << '\n';
 			}
 			//only do the complete Graph
 		}
 	}
 
+// Runs MST on each graph in order to choose which is cheapest
 	pair<int,nrConnections> roadsOutput = roadGraph.kruskalMST();
 	pair<int,nrConnections> fullOutput = fullGraph.kruskalMST();
 
-	if (roadsOutput.first > fullOutput.first){
-		std::cout << fullOutput.first << '\n';
-		std::cout << fullOutput.second.second <<' '<< fullOutput.second.first << '\n';
-	}
-	else{
+// Verifies if the output was insuficient or not and prints it
+	if (roadsOutput.first > fullOutput.first || roadsOutput.second.second < numberOfCities -1){
+		if(fullOutput.second.first + fullOutput.second.second < numberOfCities){
+			std::cout << "Insuficiente" << '\n';
+		}else{
+			std::cout << fullOutput.first << '\n';
+			std::cout << fullOutput.second.first <<' '<< fullOutput.second.second << '\n';
+		}
+	}else{
 		std::cout << roadsOutput.first << '\n';
-		std::cout << roadsOutput.second.second <<' '<< roadsOutput.second.first << '\n';
+		std::cout << roadsOutput.second.first <<' '<< roadsOutput.second.second << '\n';
 	}
-	return 0;
 
+
+	return 0;
 }
 
 
