@@ -93,6 +93,7 @@ class Graph{
 		pair<int,pair<int,int> > kruskalModified();
 };
 
+
 /**
  * Disjoint Sets CLass
  * 2 sets are disjoints if there is no common element between them.
@@ -111,6 +112,10 @@ class DisjointSets{
 		 */
 		DisjointSets(int size);
 
+		/**
+		 * Deconstructor
+		 * destroys alocated memory for the dejoinSets
+		 */
 		~DisjointSets();
 
 		/**
@@ -118,6 +123,12 @@ class DisjointSets{
 		 * @param u the node of which we want the parent
 		 */
 		int find(int u);
+
+		/**
+		 * Merges two disjoint sets into one
+		 * @param u disjoint set one
+		 * @param v disjoint set two
+		 */
 		void merge(int u, int v);
 };
 
@@ -127,8 +138,8 @@ class DisjointSets{
 
 DisjointSets::DisjointSets(int size){
 	nrElements = size;
-	parent = new int[size];
-	rank = new int[size];
+	parent = new int[size+1];
+	rank = new int[size+1];
 	for(int i = 0; i < size; i++){
 		parent[i] = i;
 		rank[i] = 0;
@@ -273,7 +284,7 @@ int inputProcess(){
 	Graph roadGraph (numberOfCities);
 	Graph fullGraph (numberOfCities+1);
 
-//initialize all cities with no airports
+//initialize all cities with no airports and 0 roads
 	for( i = 0; i < numberOfCities; i++){
 		airports[i] = -1;
 		roadsInCity[i] = 0;
@@ -304,6 +315,7 @@ int inputProcess(){
 		roadsInCity[city1-1]++;
 		roadsInCity[city2-1]++;
 	}
+
 
 	for(i = 0; i < numberOfCities; i++){
 		if(roadsInCity[i] == 0){
