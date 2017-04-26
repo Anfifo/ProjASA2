@@ -49,6 +49,9 @@ class Edge{
 bool sortEdges(const Edge& edge1, const Edge& edge2)
 {
 	if(edge1.getWeight() == edge2.getWeight()){
+		if(edge1.getType() == edge2.getType()){
+			return false;
+		}
 		return (edge1.getType()==ROAD);
 	}
     return (edge1.getWeight() < edge2.getWeight());
