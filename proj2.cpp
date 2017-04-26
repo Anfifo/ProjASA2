@@ -143,7 +143,7 @@ DisjointSets::DisjointSets(int size){
 	nrElements = size;
 	parent = new int[size+1];
 	rank = new int[size+1];
-	for(int i = 0; i < size; i++){
+	for(int i = 0; i < size+1; i++){
 		parent[i] = i;
 		rank[i] = 0;
 	}
@@ -272,12 +272,12 @@ int inputProcess(){
 	int potentialAirports = 0;
 	int potentialRoads = 0;
 	int numberOfCities = 0;
-	int airportVertex;
-	int buildingCost;
-	int airportID;
-	int city1;
-	int city2;
-	int i;
+	int airportVertex = 0;
+	int buildingCost = 0;
+	int airportID = 0;
+	int city1 = 0;
+	int city2 = 0;
+	int i = 0;
 
 	std::cin >> numberOfCities;
 
